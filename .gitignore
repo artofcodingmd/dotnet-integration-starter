@@ -52,3 +52,35 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Project-specific additions: secrets, environment files, and logs
+
+# .NET User Secrets (belt-and-suspenders: stored outside project dir by design,
+# but excluded here in case a secrets file is accidentally created in the repo)
+secrets.json
+**/secrets.json
+
+# Environment and provider-specific secrets files
+.env
+.env.*
+*key*.json
+*secret*.json
+
+# Environment-specific appsettings overrides (contain local secrets)
+appsettings.Development.json
+appsettings.Local.json
+
+# VS Code local workspace overrides (keep devcontainer, exclude personal settings)
+.vscode/*
+!.vscode/extensions.json
+
+# Application logs
+*.log
+logs/
+
+# macOS filesystem artifacts
+.DS_Store
+
+# Windows filesystem artifacts
+Thumbs.db
+Desktop.ini
