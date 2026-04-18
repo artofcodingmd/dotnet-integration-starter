@@ -1,0 +1,42 @@
+{
+    "name": "Dotnet Integration Starter",
+    "image": "mcr.microsoft.com/devcontainers/dotnet:1-8.0-bookworm",
+    "features": {
+        "ghcr.io/devcontainers/features/dotnet:2": {
+            "version": "8.0"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-dotnettools.csharp",
+                "ms-dotnettools.csdevkit",
+                "ms-dotnettools.vscode-dotnet-runtime"
+            ],
+            "settings": {
+                "dotnet.defaultSolution": "DotnetIntegrationStarter.sln",
+                "editor.formatOnSave": true,
+                "files.exclude": {
+                    "**/bin": true,
+                    "**/obj": true
+                }
+            }
+        }
+    },
+    "postCreateCommand": "dotnet list package --vulnerable && dotnet list package --deprecated && dotnet restore",
+    "remoteUser": "vscode",
+    "forwardPorts": [
+        5000,
+        5001
+    ],
+    "portsAttributes": {
+        "5000": {
+            "label": "API HTTP",
+            "onAutoForward": "notify"
+        },
+        "5001": {
+            "label": "API HTTPS",
+            "onAutoForward": "notify"
+        }
+    }
+}
