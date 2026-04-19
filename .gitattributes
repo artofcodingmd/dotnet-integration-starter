@@ -1,0 +1,9 @@
+## Set default behavior to automatically normalize line endings and use UTF-8 encoding for text files
+
+# Auto detect text files and perform LF normalization
+* text=auto encoding=UTF-8
+
+# Specify C# files as text to improve readability in diffs and ensure consistent encoding
+*.cs diff=csharp text
+*.csproj text
+*.sln text
