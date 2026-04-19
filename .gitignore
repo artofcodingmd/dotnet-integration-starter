@@ -69,6 +69,9 @@ secrets.json
 # Environment-specific appsettings overrides (contain local secrets)
 appsettings.Development.json
 appsettings.Local.json
+appsettings.Production.json
+appsettings.Staging.json
+appsettings.*.local.json
 
 # VS Code local workspace overrides (keep devcontainer, exclude personal settings)
 .vscode/*
@@ -84,3 +87,37 @@ logs/
 # Windows filesystem artifacts
 Thumbs.db
 Desktop.ini
+
+## Additional sensitive configuration considerations
+
+# AI provider key files: AI-assisted development
+*anthropic*.json
+*claude*.json
+
+# Custom build and publish outputs
+publish/
+out/
+
+# Test, coverage, and benchmark outputs beyond TestResults/
+lcov.info
+*.lcov
+coverage.xml
+coverage.json
+**/coverage-report/
+BenchmarkDotNet.Artifacts/
+
+# dotnet diagnostic and profiling files
+*.dmp
+*.diagsession
+dotnet-diagnostic-*.json
+
+# Native AOT intermediate files (publish precaution)
+*.ilk
+*.pdb.json
+native/
+
+# HTTP request environment files
+*.http.env.json
+http-client.env.json
+http-client.private.env.json
+requests.env.json
