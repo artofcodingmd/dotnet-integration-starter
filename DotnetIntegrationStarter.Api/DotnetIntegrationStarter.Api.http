@@ -1,0 +1,6 @@
+@DotnetIntegrationStarter.Api_HostAddress = http://localhost:5221
+
+GET {{DotnetIntegrationStarter.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
