@@ -1,4 +1,6 @@
+using System.ComponentModel.DataAnnotations;
 using DotnetIntegrationStarter.Api.Configuration;
+using DotnetIntegrationStarter.Api.Models;
 using DotnetIntegrationStarter.Api.Services;
 using Serilog;
 
@@ -24,6 +26,31 @@ try
 
     var app = builder.Build();
     app.UseSerilogRequestLogging();
+
+    // POST /ask endpoint
+    app.MapPost("/ask", async (AskRequest request, IIntegrationClient integrationClient, ILogger<Program> logger, CancellationToken cancellationToken) =>
+    {
+        var validationResults = new List<ValidationResult>();
+        var validationContext = new ValidationContext(request);
+        if (!Validator.TryValidateObject(request, validationContext, validationResults, true))
+        {
+            var errors = validationResults.Select(vr => vr.ErrorMessage);
+            return Results.BadRequest(new { Errors = errors });
+        }
+
+        try
+        {
+            logger.LogInformation("Processing request of length {Length}", request.Prompt.Length);
+
+            var response = await integrationClient.AskAsync(request.Prompt, cancellationToken);
+            return Results.Ok(response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to process request");
+            return Results.Problem("An error occurred while processing your request.");
+        }
+    });
 
     app.Run();
 }
