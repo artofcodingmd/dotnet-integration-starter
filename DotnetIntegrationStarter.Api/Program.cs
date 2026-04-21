@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Threading.RateLimiting;
 using DotnetIntegrationStarter.Api.Configuration;
 using DotnetIntegrationStarter.Api.Models;
 using DotnetIntegrationStarter.Api.Services;
@@ -24,8 +25,25 @@ try
 
     builder.Services.AddEndpointsApiExplorer();
 
+    // Rate limiting: 10 requests per minute per IP
+    builder.Services.AddRateLimiter(options =>
+    {
+        options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+            RateLimitPartition.GetFixedWindowLimiter(
+                partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                factory: _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 10,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    QueueLimit = 0
+                }));
+        options.RejectionStatusCode = 429; // Too Many Requests
+    });
+
     var app = builder.Build();
     app.UseSerilogRequestLogging();
+    app.UseRateLimiter();
 
     // POST /ask endpoint
     app.MapPost("/ask", async (AskRequest request, IIntegrationClient integrationClient, ILogger<Program> logger, CancellationToken cancellationToken) =>
